@@ -6,3 +6,7 @@
 
 
 ADD_SUBDIRECTORY( common )
+
+IF( BUILD_EXAMPLES )
+	ADD_SUBDIRECTORY( examples )
+ENDIF()
