@@ -34,7 +34,8 @@ FOREACH( pkg DQMCore LCIO xdrstream xdrlcio DIM )
 ENDFOREACH()
 
 # ----- package options -----------------------------------------------------------------------
-OPTION( INSTALL_DOC "Set to OFF to skip build/install Documentation" OFF )
+OPTION( INSTALL_DOC    "Set to OFF to skip build/install Documentation" OFF )
+OPTION( BUILD_EXAMPLES "Whether to build DQM4ILC examples" OFF )
 
 ADD_SUBDIRECTORY( source )
 
