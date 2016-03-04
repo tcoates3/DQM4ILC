@@ -58,6 +58,7 @@ int main(int argc, char* argv[])
 
 	std::string cmdLineFooter = "Please report bug to <rete@ipnl.in2p3.fr>";
 	TCLAP::CmdLine *pCommandLine = new TCLAP::CmdLine(cmdLineFooter, ' ', DQM4HEP_VERSION_STR);
+	std::string log4cxx_file = std::string(DQMCore_DIR) + "/conf/defaultLoggerConfig.xml";
 
 	TCLAP::ValueArg<unsigned int> sleepTimeArg(
 				  "t"
@@ -93,13 +94,33 @@ int main(int argc, char* argv[])
 				 , false);
 	pCommandLine->add(rewindArg);
 
+	TCLAP::ValueArg<std::string> loggerConfigArg(
+				  "l"
+				 , "logger-config"
+				 , "The xml logger file to configure log4cxx"
+				 , false
+				 , log4cxx_file
+				 , "string");
+	pCommandLine->add(loggerConfigArg);
+
+	std::vector<std::string> allowedLevels;
+	allowedLevels.push_back("INFO");
+	allowedLevels.push_back("WARN");
+	allowedLevels.push_back("DEBUG");
+	allowedLevels.push_back("TRACE");
+	allowedLevels.push_back("ERROR");
+	allowedLevels.push_back("FATAL");
+	allowedLevels.push_back("OFF");
+	allowedLevels.push_back("ALL");
+	TCLAP::ValuesConstraint<std::string> allowedLevelsContraint( allowedLevels );
+
 	TCLAP::ValueArg<std::string> verbosityArg(
 				  "v"
 				 , "verbosity"
-				 , "The verbosity used for this application"
+				 , "The verbosity level used for this application"
 				 , false
-				 , "WARNING"
-				 , "string");
+				 , "INFO"
+				 , &allowedLevelsContraint);
 	pCommandLine->add(verbosityArg);
 
 	TCLAP::SwitchArg simulateSpillArg(
@@ -112,8 +133,11 @@ int main(int argc, char* argv[])
 	// parse command line
 	pCommandLine->parse(argc, argv);
 
-	std::string verbosity = verbosityArg.getValue();
-	streamlog_init( "DQM4ILC LCIO FILE SERVICE" , verbosity );
+	log4cxx_file = loggerConfigArg.getValue();
+	log4cxx::xml::DOMConfigurator::configure(log4cxx_file);
+
+	if( verbosityArg.isSet() )
+		dqmMainLogger->setLevel( log4cxx::Level::toLevel( verbosityArg.getValue() ) );
 
 	bool shouldRewind = rewindArg.getValue();
 	std::vector<std::string> lcioInputFiles;
@@ -146,12 +170,7 @@ int main(int argc, char* argv[])
 		}
 		catch(StatusCodeException &exception)
 		{
-			streamlog_out(ERROR) << "*********************************************************" << std::endl;
-			streamlog_out(ERROR) << "*                                                       *" << std::endl;
-			streamlog_out(ERROR) << "*   StatusCodeException caught : " << exception.toString() << std::endl;
-			streamlog_out(ERROR) << "*     Stop processing file(s) through the service !     *" << std::endl;
-			streamlog_out(ERROR) << "*                                                       *" << std::endl;
-			streamlog_out(ERROR) << "*********************************************************" << std::endl;
+			LOG4CXX_ERROR( dqmMainLogger , "StatusCodeException caught while reading stream : " << exception.toString() );
 
 			pLCReader->close();
 			shouldRewind = false;
@@ -159,12 +178,7 @@ int main(int argc, char* argv[])
 		}
 		catch(std::exception & exception)
 		{
-			streamlog_out(ERROR) << "*********************************************************" << std::endl;
-			streamlog_out(ERROR) << "*                                                       *" << std::endl;
-			streamlog_out(ERROR) << "*     std::exception caught : " << exception.what() << std::endl;
-			streamlog_out(ERROR) << "*     Stop processing file(s) through the service !     *" << std::endl;
-			streamlog_out(ERROR) << "*                                                       *" << std::endl;
-			streamlog_out(ERROR) << "*********************************************************" << std::endl;
+			LOG4CXX_ERROR( dqmMainLogger , "std::exception caught while reading stream : " << exception.what() );
 
 			pLCReader->close();
 			shouldRewind = false;
@@ -173,11 +187,11 @@ int main(int argc, char* argv[])
 
 		if(shouldRewind)
 		{
-			streamlog_out(MESSAGE) << "Rewinding lcio files" << std::endl;
+			LOG4CXX_INFO( dqmMainLogger , "Rewinding lcio files" );
 		}
 		else
 		{
-			streamlog_out(MESSAGE) << "Exiting lcio file service ..." << std::endl;
+			LOG4CXX_INFO( dqmMainLogger , "Exiting lcio file service ..." );
 			break;
 		}
 

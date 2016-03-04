@@ -83,21 +83,21 @@ void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 
 		if(timeStampDifference > 0 && m_previousTimeStamp != 0)
 		{
-			streamlog_out(DEBUG) << "Sleeping " << timeStampDifference << " sec ..." << std::endl;
+			LOG4CXX_DEBUG( dqmMainLogger , "Sleeping " << timeStampDifference << " sec ..." );
 			sleep(timeStampDifference);
 		}
 
 		m_previousTimeStamp = timeStamp;
 
-		streamlog_out(DEBUG) << "Sending event no " << pLCEvent->getEventNumber() << std::endl;
+		LOG4CXX_DEBUG( dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
 		THROW_RESULT_IF(dqm4hep::STATUS_CODE_SUCCESS, !=, m_pEventClient->sendEvent(pDqmEvent));
-		streamlog_out(DEBUG) << "Event no " << pLCEvent->getEventNumber() << " sent" << std::endl;
+		LOG4CXX_DEBUG( dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
 	}
 	else
 	{
-		streamlog_out(DEBUG) << "Sending event no " << pLCEvent->getEventNumber() << std::endl;
+		LOG4CXX_DEBUG( dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
 		THROW_RESULT_IF(dqm4hep::STATUS_CODE_SUCCESS, !=, m_pEventClient->sendEvent(pDqmEvent));
-		streamlog_out(DEBUG) << "Event no " << pLCEvent->getEventNumber() << " sent" << std::endl;
+		LOG4CXX_DEBUG( dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
 
 		if(m_sleepTime != 0)
 		{
