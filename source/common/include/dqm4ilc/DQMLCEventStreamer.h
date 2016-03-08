@@ -37,12 +37,12 @@
 // -- xdrlcio headers
 #include "xdrlcio/XdrLcio.h"
 
-namespace dqm4hep
+namespace dqm4ilc
 {
 
 /** DQMLCEventStreamer class
  */ 
-class DQMLCEventStreamer : public DQMEventStreamer
+class DQMLCEventStreamer : public dqm4hep::DQMEventStreamer
 {
  public:
 	/** Constructor
@@ -55,11 +55,11 @@ class DQMLCEventStreamer : public DQMEventStreamer
 
 	/** Serialize the event and store it into a data stream.
 	 */
-	StatusCode write(const DQMEvent *const pEvent, xdrstream::IODevice *pDevice);
+	dqm4hep::StatusCode write(const dqm4hep::DQMEvent *const pEvent, xdrstream::IODevice *pDevice);
 
 	/** De-serialize the lcio event.
 	 */
-	StatusCode read(DQMEvent *&pEvent, xdrstream::IODevice *pDevice);
+	dqm4hep::StatusCode read(dqm4hep::DQMEvent *&pEvent, xdrstream::IODevice *pDevice);
 
 	/** Serialize the a part of the event and store it into a data stream.
 	 *
@@ -67,7 +67,7 @@ class DQMLCEventStreamer : public DQMEventStreamer
 	 *  concatenated with semi columns : "collectionName1:collectionName2:collectionName3"
 	 *  If the sub event identifier is empty the whole event is serialized
 	 */
-	StatusCode write(const DQMEvent *const pObject, const std::string &subEventIdentifier, xdrstream::IODevice *pDevice);
+	dqm4hep::StatusCode write(const dqm4hep::DQMEvent *const pObject, const std::string &subEventIdentifier, xdrstream::IODevice *pDevice);
 
 private:
 	xdrlcio::XdrLcio                     m_xdrLcio;

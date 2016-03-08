@@ -51,6 +51,7 @@
 
 using namespace std;
 using namespace dqm4hep;
+using namespace dqm4ilc;
 
 int main(int argc, char* argv[])
 {

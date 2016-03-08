@@ -38,7 +38,7 @@
 #include "EVENT/LCRunHeader.h"
 #include "IO/LCReader.h"
 
-namespace dqm4hep
+namespace dqm4ilc
 {
 
 DQMLcioReaderListener::DQMLcioReaderListener(IO::LCReader *pLCReader) :
@@ -73,7 +73,7 @@ void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 	if(NULL == m_pEventClient)
 		throw dqm4hep::StatusCodeException(dqm4hep::STATUS_CODE_NOT_INITIALIZED);
 
-	DQMEvent *pDqmEvent = new DQMLCEvent();
+	dqm4hep::DQMEvent *pDqmEvent = new DQMLCEvent();
 	pDqmEvent->setEvent<EVENT::LCEvent>(pLCEvent, false);
 
 	if(m_simulateSpill)
@@ -83,21 +83,21 @@ void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 
 		if(timeStampDifference > 0 && m_previousTimeStamp != 0)
 		{
-			LOG4CXX_DEBUG( dqmMainLogger , "Sleeping " << timeStampDifference << " sec ..." );
+			LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Sleeping " << timeStampDifference << " sec ..." );
 			sleep(timeStampDifference);
 		}
 
 		m_previousTimeStamp = timeStamp;
 
-		LOG4CXX_DEBUG( dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
 		THROW_RESULT_IF(dqm4hep::STATUS_CODE_SUCCESS, !=, m_pEventClient->sendEvent(pDqmEvent));
-		LOG4CXX_DEBUG( dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
 	}
 	else
 	{
-		LOG4CXX_DEBUG( dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
 		THROW_RESULT_IF(dqm4hep::STATUS_CODE_SUCCESS, !=, m_pEventClient->sendEvent(pDqmEvent));
-		LOG4CXX_DEBUG( dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
 
 		if(m_sleepTime != 0)
 		{
@@ -148,7 +148,7 @@ void DQMLcioReaderListener::setSimulateSpill(bool simulate)
 
 //-------------------------------------------------------------------------------------------------
 
-void DQMLcioReaderListener::setEventClient(DQMEventClient *pEventClient)
+void DQMLcioReaderListener::setEventClient(dqm4hep::DQMEventClient *pEventClient)
 {
 	m_pEventClient = pEventClient;
 }

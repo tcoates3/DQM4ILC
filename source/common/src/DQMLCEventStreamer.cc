@@ -35,7 +35,7 @@
 // -- lcio headers
 #include "EVENT/LCEvent.h"
 
-namespace dqm4hep
+namespace dqm4ilc
 {
 
 // declare a streamer plug-in
@@ -57,49 +57,49 @@ DQMLCEventStreamer::~DQMLCEventStreamer()
 
 //-------------------------------------------------------------------------------------------------
 
-StatusCode DQMLCEventStreamer::write(const DQMEvent *const pEvent, xdrstream::IODevice *pDevice)
+dqm4hep::StatusCode DQMLCEventStreamer::write(const dqm4hep::DQMEvent *const pEvent, xdrstream::IODevice *pDevice)
 {
 	if(NULL == pEvent)
-		return STATUS_CODE_INVALID_PTR;
+		return dqm4hep::STATUS_CODE_INVALID_PTR;
 
 	EVENT::LCEvent *pLCEvent = pEvent->getEvent<EVENT::LCEvent>();
 
 	if(NULL == pLCEvent)
-		return STATUS_CODE_FAILURE;
+		return dqm4hep::STATUS_CODE_FAILURE;
 
 	xdrstream::Status status = m_xdrLcio.writeEvent( pLCEvent , pDevice );
 
 	if( ! XDR_TESTBIT( status , xdrstream::XDR_SUCCESS ) )
-		return STATUS_CODE_FAILURE;
+		return dqm4hep::STATUS_CODE_FAILURE;
 
-	return STATUS_CODE_SUCCESS;
+	return dqm4hep::STATUS_CODE_SUCCESS;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-StatusCode DQMLCEventStreamer::read(DQMEvent *&pEvent, xdrstream::IODevice *pDevice)
+dqm4hep::StatusCode DQMLCEventStreamer::read(dqm4hep::DQMEvent *&pEvent, xdrstream::IODevice *pDevice)
 {
 	pEvent = NULL;
 
 	xdrstream::Status status = m_xdrLcio.readNextEvent( pDevice );
 
 	if( ! XDR_TESTBIT( status , xdrstream::XDR_SUCCESS ) )
-		return STATUS_CODE_FAILURE;
+		return dqm4hep::STATUS_CODE_FAILURE;
 
 	EVENT::LCEvent *pLCEvent = m_xdrLcio.takeLCEvent();
 
 	if(NULL == pLCEvent)
-		return STATUS_CODE_FAILURE;
+		return dqm4hep::STATUS_CODE_FAILURE;
 
 	pEvent = new DQMLCEvent();
 	pEvent->setEvent<EVENT::LCEvent>(pLCEvent, true);
 
-	return STATUS_CODE_SUCCESS;
+	return dqm4hep::STATUS_CODE_SUCCESS;
 }
 
 //-------------------------------------------------------------------------------------------------
 
-StatusCode DQMLCEventStreamer::write(const DQMEvent *const pEvent, const std::string &subEventIdentifier, xdrstream::IODevice *pDevice)
+dqm4hep::StatusCode DQMLCEventStreamer::write(const dqm4hep::DQMEvent *const pEvent, const std::string &subEventIdentifier, xdrstream::IODevice *pDevice)
 {
 	// no sub event queried -> serialize the whole event
 	if(subEventIdentifier.empty())
@@ -115,7 +115,7 @@ StatusCode DQMLCEventStreamer::write(const DQMEvent *const pEvent, const std::st
 //	if(collectionNames.empty())
 //		return STATUS_CODE_FAILURE;
 
-	return STATUS_CODE_SUCCESS;
+	return dqm4hep::STATUS_CODE_SUCCESS;
 }
 
 } 

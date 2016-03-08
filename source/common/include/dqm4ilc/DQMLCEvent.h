@@ -36,7 +36,7 @@
 // -- lcio headers
 #include "EVENT/LCEvent.h"
 
-namespace dqm4hep
+namespace dqm4ilc
 {
 
 /** DQMLCEvent class.
@@ -45,7 +45,7 @@ namespace dqm4hep
  *  Used in DQMAnalysisModule::processEvent(DQMEvent) to monitor event.
  *  See DQMAnalysisModule on how to process it in the DQM system framework
  */ 
-class DQMLCEvent : public DQMEventBase<EVENT::LCEvent>
+class DQMLCEvent : public dqm4hep::DQMEventBase<EVENT::LCEvent>
 {
 public:
 	/** Constructor

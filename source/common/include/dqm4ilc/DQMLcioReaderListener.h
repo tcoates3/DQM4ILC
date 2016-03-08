@@ -36,11 +36,10 @@
 namespace EVENT { class LCEvent; }
 namespace EVENT { class LCRunHeader; }
 namespace IO { class LCReader; }
+namespace dqm4hep { class DQMEventClient; }
 
-namespace dqm4hep
+namespace dqm4ilc
 {
-
-class DQMEventClient;
 
 /** DQMLcioReaderListener class
  */ 
@@ -61,7 +60,7 @@ class DQMLcioReaderListener : public IO::LCRunListener, public IO::LCEventListen
 
 	/** Set the event collector client that will publish the event over the network
 	 */
-	void setEventClient(DQMEventClient *pEventClient);
+	void setEventClient(dqm4hep::DQMEventClient *pEventClient);
 
 	/** Whether the listener has to simulate a spill time structure.
 	 *  The time stamp is looked-up in LCEvents and a sleep(n) is
@@ -76,7 +75,7 @@ class DQMLcioReaderListener : public IO::LCRunListener, public IO::LCEventListen
 
 protected:
 
-	DQMEventClient                    *m_pEventClient;
+	dqm4hep::DQMEventClient           *m_pEventClient;
 	IO::LCReader                      *m_pLCReader;
 	unsigned int                       m_sleepTime;
 	bool                               m_simulateSpill;
