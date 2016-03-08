@@ -44,5 +44,14 @@ OPTION( BUILD_EXAMPLES "Whether to build DQM4ILC examples" OFF )
 
 ADD_SUBDIRECTORY( source )
 
+###############################
+# Generate DQM4ILCeConfig.h 
+CONFIGURE_FILE( "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}Config.h.cmake.in"
+    "${PROJECT_SOURCE_DIR}/source/common/include/${PROJECT_NAME}Config.h" @ONLY )
+
 # display some variables and write them to cache
 DISPLAY_STD_VARIABLES()
+
+###############################
+# generate and install following configuration files
+GENERATE_PACKAGE_CONFIGURATION_FILES( ${PROJECT_NAME}Config.cmake ${PROJECT_NAME}ConfigVersion.cmake ${PROJECT_NAME}LibDeps.cmake )

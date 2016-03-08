@@ -1,0 +1,85 @@
+##############################################################################
+# cmake configuration file for DQM4ILC
+#
+# requires:
+#   MacroCheckPackageLibs.cmake for checking package libraries
+#   MacroExportPackageDeps.cmake for exporting package dependencies
+#
+# returns following variables:
+#
+#   DQM4ILC_FOUND      : set to TRUE if DQM4ILC found
+#       if FIND_PACKAGE called with REQUIRED and COMPONENTS arguments
+#       DQM4ILC_FOUND is only set to TRUE if ALL components are also found
+#       if REQUIRED is NOT set components may or may not be available
+#
+#   DQM4ILC_ROOT       : path to this DQM4ILC installation
+#   DQM4ILC_VERSION    : package version
+#   DQM4ILC_LIBRARIES  : list of DQM4ILC libraries (NOT including COMPONENTS)
+#   DQM4ILC_INCLUDE_DIRS  : list of paths to be used with INCLUDE_DIRECTORIES
+#   DQM4ILC_LIBRARY_DIRS  : list of paths to be used with LINK_DIRECTORIES
+#   DQM4ILC_COMPONENT_LIBRARIES      : list of DQM4ILC component libraries
+#   DQM4ILC_${COMPONENT}_FOUND       : set to TRUE or FALSE for each library
+#   DQM4ILC_${COMPONENT}_LIBRARY     : path to individual libraries
+#   DQM4ILC_${COMPONENT}_LIB_DEPENDS : individual library dependencies
+#
+# @author Jan Engels, Desy
+# Modified for DQM4ILC use by : Remi Ete, IPNL
+##############################################################################
+
+SET( DQM4ILC_ROOT "@CMAKE_INSTALL_PREFIX@" )
+SET( DQM4ILC_VERSION "@DQM4ILC_VERSION@" )
+
+
+# ---------- include dirs -----------------------------------------------------
+# do not store find results in cache
+SET( DQM4ILC_INCLUDE_DIRS DQM4ILC_INCLUDE_DIRS-NOTFOUND )
+MARK_AS_ADVANCED( DQM4ILC_INCLUDE_DIRS )
+
+FIND_PATH( DQM4ILC_INCLUDE_DIRS
+	NAMES DQM4ILCConfig.h
+	PATHS @CMAKE_INSTALL_PREFIX@/include/
+	NO_DEFAULT_PATH
+)
+
+
+
+# ---------- libraries --------------------------------------------------------
+INCLUDE( "@CMAKE_INSTALL_PREFIX@/cmake/MacroCheckPackageLibs.cmake" )
+
+# only standard libraries should be passed as arguments to CHECK_PACKAGE_LIBS
+# additional components are set by cmake in variable PKG_FIND_COMPONENTS
+# first argument should be the package name
+CHECK_PACKAGE_LIBS( DQM4ILC DQM4ILC )
+
+
+# ---------- dependencies -----------------------------------------------------
+INCLUDE( "@CMAKE_INSTALL_PREFIX@/cmake/MacroExportPackageDeps.cmake" )
+# exports following package dependencies (if set)
+# first argument of macro should be the package name
+SET( DQM4ILC_DEPENDS_INCLUDE_DIRS  @DQM4ILC_DEPENDS_INCLUDE_DIRS@ )
+SET( DQM4ILC_DEPENDS_LIBRARY_DIRS  @DQM4ILC_DEPENDS_LIBRARY_DIRS@ )
+SET( DQM4ILC_DEPENDS_LIBRARIES  @DQM4ILC_DEPENDS_LIBRARIES@ )
+EXPORT_PACKAGE_DEPENDENCIES( DQM4ILC )
+
+
+
+# ---------- final checking ---------------------------------------------------
+INCLUDE( FindPackageHandleStandardArgs )
+# set DQM4ILC_FOUND to TRUE if all listed variables are TRUE and not empty
+# DQM4ILC_COMPONENT_VARIABLES will be set if FIND_PACKAGE is called with REQUIRED argument
+FIND_PACKAGE_HANDLE_STANDARD_ARGS( DQM4ILC DEFAULT_MSG DQM4ILC_ROOT DQM4ILC_INCLUDE_DIRS DQM4ILC_LIBRARIES ${DQM4ILC_COMPONENT_VARIABLES} )
+
+SET( DQM4ILC_FOUND ${DQM4ILC_FOUND} )
+
+
+
+# ---------- definitions ------------------------------------------------------
+IF( DQM4ILC_FOUND )
+
+    IF( CMAKE_BUILD_TYPE STREQUAL "Debug" OR
+        CMAKE_BUILD_TYPE STREQUAL "RelWithDebInfo" )
+        MARK_AS_ADVANCED( DQM4ILC_DEFINITIONS )
+    ENDIF()
+
+ENDIF()
+
