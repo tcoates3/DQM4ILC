@@ -14,6 +14,12 @@ SET( ${PROJECT_NAME}_VERSION_MINOR 0 )
 SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 
 
+# ----- CLANG 7.0+ throws error for  undefined-bool-conversion warnings in gear/tinyxml.h -----
+# ----- error: 'this' pointer cannot be null in well-defined C++ code; pointer may be assumed to always convert to true [-Werror,-Wundefined-bool-conversion] -----
+IF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+	SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-undefined-bool-conversion")
+ENDIF (CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+
 # ----- dependencies -----
 FIND_PACKAGE( ILCUTIL COMPONENTS ILCSOFT_CMAKE_MODULES streamlog REQUIRED )
 INCLUDE( ilcsoft_default_settings )
