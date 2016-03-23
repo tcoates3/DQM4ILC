@@ -1,0 +1,61 @@
+{
+    "HOSTS" :
+    {
+
+	"flc58.desy.de":[	    
+	    {
+		"NAME":"EVENT_COLLECTOR",
+		"ARGS" : ["-c", "ahcal_event_collector", "-s", "LCIOStreamer"],
+		"ENV" : [
+			"DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/lib/libDQM4ILC.so",
+		    "DIM_DNS_NODE=localhost"
+		],
+		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/DQMCore/bin/dqm4hep_start_event_collector"
+	    },
+	    {
+		"NAME":"ME_COLLECTOR",
+		"ARGS" : ["-c", "ahcal_me_collector"],
+		"ENV" : [
+		    "DIM_DNS_NODE=localhost"
+		],
+		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/DQMCore/bin/dqm4hep_start_monitor_element_collector"
+	    },
+	    {
+		"NAME":"LCIO_EVENT_SERVICE",
+		"ARGS" : ["-f", "/space/airqui/Programs/Run_30270__23p08p2015__12p29p10.slcio", "-c", "ahcal_event_collector", "-r", "-v", "DEBUG", "-t", "10000"],
+		"ENV" : [
+		    "DIM_DNS_NODE=localhost"
+		],
+		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/bin/dqm4hep_start_lcio_file_service"
+	    },
+	    {
+		"NAME":"AHCALRawModule",
+		"ARGS" : ["-f", "/space/airqui/Programs/DQM4HEP/DQM4ILC/source/examples/AHCALRawModule/lcioAHCALTests.xml", "-l"],
+		"ENV" : [
+		    "DIM_DNS_NODE=localhost",
+		    "DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so"
+		],
+		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/DQMCore/bin/dqm4hep_start_analysis_module"	
+	    }
+	    /*
+	    {
+		"NAME":"RANDOM_ANALYSIS_MODULE",
+		"ARGS" : ["-f", "/space/airqui/Programs/DQM4HEP/DQMCore/conf/randommodule.xml", "-l"],
+		"ENV" : [
+		    "DIM_DNS_NODE=localhost",
+		    "DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/DQMCore/lib/libRandomModuleExample.so"
+		],
+		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/DQMCore/bin/dqm4hep_start_analysis_module"
+	    },
+	    {
+		"NAME":"STANDALONE_RANDOM_ANALYSIS_MODULE",
+		"ARGS" : ["-f", "/space/airqui/Programs/DQM4HEP/DQMCore/conf/standalonerandommodule.xml", "-l"],
+		"ENV" : [
+		    "DIM_DNS_NODE=localhost",
+		    "DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/DQMCore/lib/libStandaloneRandomModuleExample.so"
+		],
+		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/DQMCore/bin/dqm4hep_start_standalone_module"
+	    }*/      
+	]
+    }
+}

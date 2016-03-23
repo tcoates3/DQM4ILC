@@ -1,0 +1,70 @@
+#! /bin/bash
+
+#0) set environment variables and
+# locate executables an libraries
+
+source /space/airqui/Programs/DQM4HEP/ilcinstall/v01-17-07/init_ilcsoft.sh
+export LD_LIBRARY_PATH=/space/airqui/Programs/DQM4HEP/lib:$LD_LIBRARY_PATH
+export PATH=/space/airqui/Programs/DQM4HEP/bin:$PATH
+
+#1) start dim dns node (dim package) : 
+
+dns &
+
+#2) start dimjc_daemon (dimjc package) as root user
+
+export DIM_DNS_NODE=localhost
+
+sudo su
+dimjc_daemon &
+
+#3) edit full_test_local.json as you need. To obtain your host name, type hostname (need the text name)
+# Ajust the paths and config files as you need
+
+# RUNNING THE SETUP
+###################
+
+#From now, in each terminal you open, you must export DIM_DNS_NODE 
+#to 'localhost' (we are running locally) before running anything else :
+
+
+#4) Start the job control :
+
+dqm4hep_start_job_interface &
+
+#Load you json file with your local settings, you've just edited and
+#start all the jobs. Update the interface to see the status of your 
+#jobs
+
+#If everything is ok, at this step you have :
+
+# * An event service that publishes lcio event
+# * An event collector that collects these events
+# * An analysis module, waiting for a new run
+# * A standalone module, producing and publishing monitor elements
+# * A monitor element collector that collects element coming from both modules
+
+#5) Start a run control : 
+
+dqm4hep_start_run_control [-r AHCALRunControlName] &
+
+#If no '-r' option is provided the run control is called "DEFAULT"
+#The name must match the one provided in your analysismodule settings 
+#file.
+
+#Customize as you the run parameters (not mandatory) and start a new
+#run.
+
+#6) Start a monitor gui :
+
+dqm4hep_start_dqm_monitoring_gui &
+
+#Click on 'Browse' and select our monitor element collector in the list.
+#You'll see some elements the in the search result view. Select the one
+#you wanna monitor and click on "Append" or "Replace" (no matter here).
+#Tadaaa !
+#On the main window, some contents appear on the left. You can start 
+#browsing it by clicking, using the enter key or by drag-and-dropping
+#element in the canvas area on the right.
+
+#Enjoy !

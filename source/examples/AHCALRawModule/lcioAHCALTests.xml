@@ -1,0 +1,42 @@
+<dqm4hep>
+
+    <archiver open="true" directory="/tmp" />
+    
+    <network>
+        <runcontrol type="DimRunControlClient" name="AHCALRunControl" />
+        
+        <eventcollector type="DimEventClient">
+        	<parameter name="collectorName"> ahcal_event_collector </parameter>
+        	<parameter name="subEventIdentifier"> HCALEndcap </parameter>
+        	<parameter name="updateMode"> true </parameter>
+        	<parameter name="maxQueueSize"> 100 </parameter>
+        	<parameter name="streamerName"> LCIOStreamer </parameter>
+        </eventcollector>
+        
+        <monitorelementcollector name="ahcal_me_collector"/>
+    </network>
+    
+    <cycle type="TimerCycle" value="10" timeout="5" />
+
+    <module type="AHCALRawModule" name="MyAHCALRawModule">
+        
+        <parameter name="DumpEvent"> false </parameter>
+        
+		<monitorElement ID="ADC_hb0"
+			name="ADC_hb0" path="/" type="TH1I" title="ADC counts when hit bit 0, all channels" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="ADC_hb1"
+			name="ADC_hb1" path="/" type="TH1I" title="ADC counts when hit bit 1, all channels" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="NHit"
+			name="NHit" path="/" type="TH1I" title="The number of hits distribution" 
+			nBins="1300" min="0" max="1300" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+        	
+    </module>
+
+</dqm4hep>
