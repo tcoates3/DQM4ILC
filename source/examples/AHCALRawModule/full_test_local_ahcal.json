@@ -30,10 +30,10 @@
 	    },
 	    {
 		"NAME":"AHCALRawModule",
-		"ARGS" : ["-f", "/space/airqui/Programs/DQM4HEP/DQM4ILC/source/examples/AHCALRawModule/lcioAHCALTests.xml", "-l"],
+		"ARGS" : ["-f", "/space/airqui/Programs/DQM4HEP/DQM4ILC/source/examples/AHCALRawModule/lcioAHCALTests.xml"],
 		"ENV" : [
 		    "DIM_DNS_NODE=localhost",
-		    "DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so"
+		    "DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so:/space/airqui/Programs/DQM4HEP/lib/libDQM4ILC.so"
 		],
 		"PROGRAM" : "/space/airqui/Programs/DQM4HEP/DQMCore/bin/dqm4hep_start_analysis_module"	
 	    }

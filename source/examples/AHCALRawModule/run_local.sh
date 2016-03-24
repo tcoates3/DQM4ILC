@@ -29,7 +29,7 @@ dqm4hep_start_lcio_file_service -f /space/airqui/Programs/Run_30270__23p08p2015_
 # BAD CONFIGURATION in the xml file ?
 # Wrong communication with the streamer ?
 
-export DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so:/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so.1.0:/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so.1.0.0
+export DQM4HEP_PLUGIN_DLL=/space/airqui/Programs/DQM4HEP/lib/libDQM4ILC.so/space/airqui/Programs/DQM4HEP/lib/libAHCALRawModule.so
 dqm4hep_start_analysis_module -f /space/airqui/Programs/DQM4HEP/DQM4ILC/source/examples/AHCALRawModule/lcioAHCALTests.xml
 
 
