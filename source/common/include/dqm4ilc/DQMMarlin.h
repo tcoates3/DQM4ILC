@@ -36,6 +36,8 @@ namespace EVENT { class LCEvent; }
 
 class TiXmlHandle;
 
+namespace gear { class TiXmlElement; }
+
 namespace dqm4ilc
 {
 
