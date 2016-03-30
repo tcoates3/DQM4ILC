@@ -53,19 +53,19 @@ public:
 	StatusCode endModule();
 
 protected:
-	DQMMonitorElement                        *m_pHitsEnergyElement;
-	DQMMonitorElement                        *m_pNHitElement;
-	DQMMonitorElement                        *m_pXZProfileElement;
-	DQMMonitorElement                        *m_pYZProfileElement;
-	DQMMonitorElement                        *m_pXYProfileElement;
-	DQMMonitorElement                        *m_pLayerProfileElement;
-	DQMMonitorElement                        *m_pTimeElement;
-	DQMMonitorElement                        *m_pLastXZProfileElement;
-	DQMMonitorElement                        *m_pLastYZProfileElement;
-	DQMMonitorElement                        *m_pLastXYProfileElement;
+	DQMMonitorElementPtr                        m_pHitsEnergyElement;
+	DQMMonitorElementPtr                        m_pNHitElement;
+	DQMMonitorElementPtr                        m_pXZProfileElement;
+	DQMMonitorElementPtr                        m_pYZProfileElement;
+	DQMMonitorElementPtr                        m_pXYProfileElement;
+	DQMMonitorElementPtr                        m_pLayerProfileElement;
+	DQMMonitorElementPtr                        m_pTimeElement;
+	DQMMonitorElementPtr                        m_pLastXZProfileElement;
+	DQMMonitorElementPtr                        m_pLastYZProfileElement;
+	DQMMonitorElementPtr                        m_pLastXYProfileElement;
 
-	bool                                      m_dumpEvent;
-}; 
+	bool                                        m_dumpEvent;
+};
 
 } 
 

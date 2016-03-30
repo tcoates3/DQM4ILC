@@ -33,6 +33,14 @@
 #include <cstdlib>
 #include <limits>
 
+// -- lcio headers
+#include "EVENT/CalorimeterHit.h"
+#include "EVENT/LCCollection.h"
+#include "EVENT/LCEvent.h"
+#include "EVENT/LCIO.h"
+#include "UTIL/CellIDDecoder.h"
+#include "UTIL/LCTOOLS.h"
+
 // -- dqm4hep headers
 #include "dqm4hep/DQMMonitorElement.h"
 #include "dqm4hep/DQMCoreTool.h"
@@ -45,13 +53,6 @@
 
 // -- root headers
 #include "TRandom.h"
-
-#include "EVENT/CalorimeterHit.h"
-#include "EVENT/LCCollection.h"
-#include "EVENT/LCEvent.h"
-#include "EVENT/LCIO.h"
-#include "UTIL/CellIDDecoder.h"
-#include "UTIL/LCTOOLS.h"
 
 namespace dqm4hep
 {
