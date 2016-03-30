@@ -5,22 +5,22 @@
  * Creation date : jeu. nov. 6 2014
  *
  * This file is part of DQM4HEP libraries.
- * 
+ *
  * DQM4HEP is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * based upon these libraries are permitted. Any copy of these libraries
  * must include this copyright notice.
- * 
+ *
  * DQM4HEP is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with DQM4HEP.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Remi Ete
  * @copyright CNRS , IPNL
  */
@@ -37,6 +37,7 @@
 #include "EVENT/LCEvent.h"
 #include "EVENT/LCRunHeader.h"
 #include "IO/LCReader.h"
+#include "EVENT/LCCollection.h"
 
 namespace dqm4ilc
 {
@@ -46,7 +47,8 @@ DQMLcioReaderListener::DQMLcioReaderListener(IO::LCReader *pLCReader) :
 		m_pEventClient(NULL),
 		m_sleepTime(0),
 		m_simulateSpill(false),
-		m_previousTimeStamp(0)
+		m_previousTimeStamp(0),
+	  m_moduleLogStr("[DQMLcioReaderListener]")
 {
 	if(NULL == m_pLCReader)
 		throw dqm4hep::StatusCodeException(dqm4hep::STATUS_CODE_INVALID_PTR);
@@ -57,7 +59,7 @@ DQMLcioReaderListener::DQMLcioReaderListener(IO::LCReader *pLCReader) :
 
 //-------------------------------------------------------------------------------------------------
 
-DQMLcioReaderListener::~DQMLcioReaderListener() 
+DQMLcioReaderListener::~DQMLcioReaderListener()
 {
 	if(m_pLCReader)
 	{
@@ -70,6 +72,24 @@ DQMLcioReaderListener::~DQMLcioReaderListener()
 
 void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 {
+	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - event... " << pLCEvent->getEventNumber());
+	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Size... " << pLCEvent->getWeight());
+	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Timestamp... " << pLCEvent->getTimeStamp());
+
+	typedef const std::vector<std::string> StringVec ;
+  StringVec* strVec = pLCEvent->getCollectionNames() ;
+	for( StringVec::const_iterator name = strVec->begin() ; name != strVec->end() ; name++){
+    LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - collectionName... " <<  name->c_str());
+    EVENT::LCCollection* col = pLCEvent->getCollection( *name ) ;
+    LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - collectionType... " <<  col->getTypeName());
+    LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - NumberOfHits... " <<  col->getNumberOfElements()) ;
+  	if (col->getNumberOfElements() > 1000000)
+   	{
+			LOG4CXX_WARN( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Too many hits (" << col->getNumberOfElements() << "), in event " << pLCEvent->getEventNumber() << " skipping..." );
+			return;
+		}
+	}
+
 	if(NULL == m_pEventClient)
 		throw dqm4hep::StatusCodeException(dqm4hep::STATUS_CODE_NOT_INITIALIZED);
 
@@ -83,21 +103,21 @@ void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 
 		if(timeStampDifference > 0 && m_previousTimeStamp != 0)
 		{
-			LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Sleeping " << timeStampDifference << " sec ..." );
+			LOG4CXX_WARN( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Spill simulation... Sleeping " << timeStampDifference << " sec ..." );
 			sleep(timeStampDifference);
 		}
 
 		m_previousTimeStamp = timeStamp;
 
-		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Sending event no " << pLCEvent->getEventNumber() );
 		THROW_RESULT_IF(dqm4hep::STATUS_CODE_SUCCESS, !=, m_pEventClient->sendEvent(pDqmEvent));
-		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Event no " << pLCEvent->getEventNumber() << " sent" );
 	}
 	else
 	{
-		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Sending event no " << pLCEvent->getEventNumber() );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Sending event no " << pLCEvent->getEventNumber() );
 		THROW_RESULT_IF(dqm4hep::STATUS_CODE_SUCCESS, !=, m_pEventClient->sendEvent(pDqmEvent));
-		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , "Event no " << pLCEvent->getEventNumber() << " sent" );
+		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Event no " << pLCEvent->getEventNumber() << " sent" );
 
 		if(m_sleepTime != 0)
 		{
@@ -153,5 +173,5 @@ void DQMLcioReaderListener::setEventClient(dqm4hep::DQMEventClient *pEventClient
 	m_pEventClient = pEventClient;
 }
 
-} 
+}
 
