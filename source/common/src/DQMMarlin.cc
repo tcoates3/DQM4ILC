@@ -28,6 +28,9 @@
 
 #include "dqm4ilc/DQMMarlin.h"
 
+// -- lcio headers
+#include "EVENT/LCIO.h"
+
 // -- dqm4hep headers
 #include "dqm4hep/DQM4HEP.h"
 #include "dqm4hep/DQMModuleApi.h"
@@ -36,6 +39,7 @@
 #include "dqm4hep/DQMPluginManager.h"
 
 // -- marlin headers
+#include "marlin/tinyxml.h"
 #include "marlin/IParser.h"
 #include "marlin/Parser.h"
 #include "marlin/XMLParser.h"
