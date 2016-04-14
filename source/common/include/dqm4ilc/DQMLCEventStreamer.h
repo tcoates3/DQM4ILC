@@ -53,6 +53,11 @@ class DQMLCEventStreamer : public dqm4hep::DQMEventStreamer
 	 */
 	~DQMLCEventStreamer();
 
+	/** Factory method to create the corresponding DQM event to this streamer.
+	 *  The dqm event is expected to contains an allocated wrapped event
+	 */
+	dqm4hep::DQMEvent *createEvent() const;
+
 	/** Serialize the event and store it into a data stream.
 	 */
 	dqm4hep::StatusCode write(const dqm4hep::DQMEvent *const pEvent, xdrstream::IODevice *pDevice);

@@ -57,6 +57,16 @@ DQMLCEventStreamer::~DQMLCEventStreamer()
 
 //-------------------------------------------------------------------------------------------------
 
+dqm4hep::DQMEvent *DQMLCEventStreamer::createEvent() const
+{
+	DQMLCEvent *pDqmLCEvent = new DQMLCEvent();
+	pDqmLCEvent->setEvent(new IMPL::LCEventImpl());
+
+	return pDqmLCEvent;
+}
+
+//-------------------------------------------------------------------------------------------------
+
 dqm4hep::StatusCode DQMLCEventStreamer::write(const dqm4hep::DQMEvent *const pEvent, xdrstream::IODevice *pDevice)
 {
 	if(NULL == pEvent)
