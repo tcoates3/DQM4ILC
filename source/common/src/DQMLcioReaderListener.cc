@@ -32,6 +32,7 @@
 // -- dqm4hep headers
 #include "dqm4hep/DQMLogging.h"
 #include "dqm4hep/DQMEventClient.h"
+#include "dqm4hep/DQMCoreTool.h"
 
 // -- lcio headers
 #include "EVENT/LCEvent.h"
@@ -120,12 +121,7 @@ void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 		LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Event no " << pLCEvent->getEventNumber() << " sent" );
 
 		if(m_sleepTime != 0)
-		{
-			timespec timesleep;
-		    timesleep.tv_sec = 0;
-		    timesleep.tv_nsec = 1000*m_sleepTime;
-			nanosleep(&timesleep, NULL);
-		}
+			dqm4hep::DQMCoreTool::sleep(std::chrono::milliseconds(m_sleepTime));
 	}
 
 	delete pDqmEvent;
