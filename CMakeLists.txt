@@ -10,7 +10,7 @@ PROJECT( DQM4ILC )
 
 ### PACKAGE VERSIONS ########################################################
 SET( ${PROJECT_NAME}_VERSION_MAJOR 1 )
-SET( ${PROJECT_NAME}_VERSION_MINOR 0 )
+SET( ${PROJECT_NAME}_VERSION_MINOR 1 )
 SET( ${PROJECT_NAME}_VERSION_PATCH 0 )
 
 ###############################
