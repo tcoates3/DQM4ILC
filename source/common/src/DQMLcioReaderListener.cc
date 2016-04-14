@@ -84,6 +84,13 @@ void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
     EVENT::LCCollection* col = pLCEvent->getCollection( *name ) ;
     LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - collectionType... " <<  col->getTypeName());
     LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - NumberOfHits... " <<  col->getNumberOfElements()) ;
+
+		if ( !std::string("RU_XDAQ").compare(name->c_str()) && pLCEvent->getEventNumber() == 0 )
+		{
+			LOG4CXX_WARN( dqm4hep::dqmMainLogger , m_moduleLogStr << " Skipping first RU_XDAQ event ... " );
+			return;
+		}
+
   	if (col->getNumberOfElements() > 1000000)
    	{
 			LOG4CXX_WARN( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Too many hits (" << col->getNumberOfElements() << "), in event " << pLCEvent->getEventNumber() << " skipping..." );

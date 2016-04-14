@@ -145,7 +145,7 @@ int main(int argc, char* argv[])
 	DQM4HEP::tokenize(lcioFileNamesArg.getValue(), lcioInputFiles, ":");
 
 	// file reader
-	IO::LCReader *pLCReader = IOIMPL::LCFactory::getInstance()->createLCReader(1);
+	IO::LCReader *pLCReader = IOIMPL::LCFactory::getInstance()->createLCReader(0);
 
 	// event collector client
 	DQMEventClient *pEventClient = new DQMDimEventClient();
