@@ -64,9 +64,9 @@ int main(int argc, char* argv[])
 	TCLAP::ValueArg<unsigned int> sleepTimeArg(
 				  "t"
 				 , "sleep-time"
-				 , "The sleep time between each event (in usec)"
+				 , "The sleep time between each event (unit msec)"
 				 , false
-				 , 100000
+				 , 1000
 				 , "unsigned int");
 	pCommandLine->add(sleepTimeArg);
 
