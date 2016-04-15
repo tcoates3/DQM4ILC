@@ -49,7 +49,7 @@ DQMLcioReaderListener::DQMLcioReaderListener(IO::LCReader *pLCReader) :
 		m_sleepTime(0),
 		m_simulateSpill(false),
 		m_previousTimeStamp(0),
-	  m_moduleLogStr("[DQMLcioReaderListener]")
+		m_moduleLogStr("[DQMLcioReaderListener]")
 {
 	if(NULL == m_pLCReader)
 		throw dqm4hep::StatusCodeException(dqm4hep::STATUS_CODE_INVALID_PTR);
@@ -73,30 +73,11 @@ DQMLcioReaderListener::~DQMLcioReaderListener()
 
 void DQMLcioReaderListener::processEvent(EVENT::LCEvent *pLCEvent)
 {
-	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - event... " << pLCEvent->getEventNumber());
-	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Size... " << pLCEvent->getWeight());
-	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Timestamp... " << pLCEvent->getTimeStamp());
-
-	typedef const std::vector<std::string> StringVec ;
-  StringVec* strVec = pLCEvent->getCollectionNames() ;
-	for( StringVec::const_iterator name = strVec->begin() ; name != strVec->end() ; name++){
-    LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - collectionName... " <<  name->c_str());
-    EVENT::LCCollection* col = pLCEvent->getCollection( *name ) ;
-    LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - collectionType... " <<  col->getTypeName());
-    LOG4CXX_DEBUG( dqm4hep::dqmMainLogger , m_moduleLogStr << " - NumberOfHits... " <<  col->getNumberOfElements()) ;
-
-		if ( !std::string("RU_XDAQ").compare(name->c_str()) && pLCEvent->getEventNumber() == 0 )
-		{
-			LOG4CXX_WARN( dqm4hep::dqmMainLogger , m_moduleLogStr << " Skipping first RU_XDAQ event ... " );
-			return;
-		}
-
-  	if (col->getNumberOfElements() > 1000000)
-   	{
-			LOG4CXX_WARN( dqm4hep::dqmMainLogger , m_moduleLogStr << " - Too many hits (" << col->getNumberOfElements() << "), in event " << pLCEvent->getEventNumber() << " skipping..." );
-			return;
-		}
-	}
+	LOG4CXX_DEBUG( dqm4hep::dqmMainLogger ,
+			m_moduleLogStr
+			<< " Event no " << pLCEvent->getEventNumber()
+			<< ", weight = " << pLCEvent->getWeight()
+			<< ", time stamp = " << pLCEvent->getTimeStamp() );
 
 	if(NULL == m_pEventClient)
 		throw dqm4hep::StatusCodeException(dqm4hep::STATUS_CODE_NOT_INITIALIZED);

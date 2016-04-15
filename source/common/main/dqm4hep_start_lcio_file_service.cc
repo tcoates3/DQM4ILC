@@ -70,6 +70,15 @@ int main(int argc, char* argv[])
 				 , "unsigned int");
 	pCommandLine->add(sleepTimeArg);
 
+	TCLAP::ValueArg<unsigned int> skipNEventsArg(
+				  "n"
+				 , "skip-event"
+				 , "The number of events to skip form file beginning"
+				 , false
+				 , 0
+				 , "unsigned int");
+	pCommandLine->add(skipNEventsArg);
+
 	TCLAP::ValueArg<std::string> lcioFileNamesArg(
 				  "f"
 				 , "lcio-files"
@@ -166,6 +175,10 @@ int main(int argc, char* argv[])
 		try
 		{
 		   pLCReader->open(lcioInputFiles);
+
+		   if( skipNEventsArg.getValue() )
+			   pLCReader->skipNEvents( skipNEventsArg.getValue() );
+
 		   pLCReader->readStream();
 		   pLCReader->close();
 		}
