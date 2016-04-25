@@ -5,28 +5,31 @@
  * Creation date : lun. mars 7 2016
  *
  * This file is part of DQM4ILC libraries.
- * 
+ *
  * DQM4ILC is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
  * (at your option) any later version.
  * based upon these libraries are permitted. Any copy of these libraries
  * must include this copyright notice.
- * 
+ *
  * DQM4ILC is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with DQM4ILC.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * @author Remi Ete
  * @copyright CNRS , IPNL
  */
 
 
 #include "dqm4ilc/DQMMarlin.h"
+
+// -- lcio headers
+#include "EVENT/LCIO.h"
 
 // -- dqm4hep headers
 #include "dqm4hep/DQM4HEP.h"
@@ -36,6 +39,7 @@
 #include "dqm4hep/DQMPluginManager.h"
 
 // -- marlin headers
+#include "marlin/tinyxml.h"
 #include "marlin/IParser.h"
 #include "marlin/Parser.h"
 #include "marlin/XMLParser.h"
@@ -54,14 +58,14 @@
 namespace dqm4ilc
 {
 
-DQMMarlin::DQMMarlin() 
+DQMMarlin::DQMMarlin()
 {
 	/* nop */
 }
 
 //-------------------------------------------------------------------------------------------------
 
-DQMMarlin::~DQMMarlin() 
+DQMMarlin::~DQMMarlin()
 {
 	/* nop */
 }
@@ -78,7 +82,7 @@ void DQMMarlin::init(const std::string &steeringFileName)
 	{
 		std::stringstream ss;
 		ss << "MarlinModule : MARLIN_DLL env var not set !";
-		std::cout << ss << std::endl;
+		std::cout << ss.str() << std::endl;
 
 		throw EVENT::Exception(ss.str());
 	}
@@ -91,7 +95,7 @@ void DQMMarlin::init(const std::string &steeringFileName)
 	{
 		std::stringstream ss;
 		ss << "Failed to load Marlin processors !";
-		std::cout << ss << std::endl;
+		std::cout << ss.str() << std::endl;
 
 		throw EVENT::Exception(ss.str());
 	}
@@ -119,7 +123,7 @@ void DQMMarlin::init(const std::string &steeringFileName)
     {
 		std::stringstream ss;
 		ss << "Could not get global parameters from steering file !";
-		std::cout << ss << std::endl;
+		std::cout << ss.str() << std::endl;
 
 		throw EVENT::Exception(ss.str());
     }
@@ -206,7 +210,7 @@ void DQMMarlin::init(const std::string &steeringFileName)
     {
 		std::stringstream ss;
 		ss << "Couldn't initialize marlin application : " << exception.what();
-		streamlog_out(ERROR) << ss << std::endl;
+		streamlog_out(ERROR) << ss.str() << std::endl;
 
 		throw EVENT::Exception(ss.str());
     }
@@ -214,7 +218,7 @@ void DQMMarlin::init(const std::string &steeringFileName)
     {
 		std::stringstream ss;
 		ss << "Couldn't initialize marlin application ! Unknown exception !";
-		streamlog_out(ERROR) << ss << std::endl;
+		streamlog_out(ERROR) << ss.str() << std::endl;
 
 		throw EVENT::Exception(ss.str());
     }
@@ -267,12 +271,12 @@ void DQMMarlin::createProcessors(marlin::IParser *pParser)
         {
         	std::stringstream ss;
         	ss <<  "Undefined processor : " << activeProcessors[i];
-            streamlog_out(ERROR) << ss << std::endl;
+            streamlog_out(ERROR) << ss.str() << std::endl;
 
             throw EVENT::Exception(ss.str());
         }
     }
 }
 
-} 
+}
 

@@ -64,11 +64,20 @@ int main(int argc, char* argv[])
 	TCLAP::ValueArg<unsigned int> sleepTimeArg(
 				  "t"
 				 , "sleep-time"
-				 , "The sleep time between each event (in usec)"
+				 , "The sleep time between each event (unit msec)"
 				 , false
-				 , 100000
+				 , 1000
 				 , "unsigned int");
 	pCommandLine->add(sleepTimeArg);
+
+	TCLAP::ValueArg<unsigned int> skipNEventsArg(
+				  "n"
+				 , "skip-event"
+				 , "The number of events to skip form file beginning"
+				 , false
+				 , 0
+				 , "unsigned int");
+	pCommandLine->add(skipNEventsArg);
 
 	TCLAP::ValueArg<std::string> lcioFileNamesArg(
 				  "f"
@@ -145,7 +154,7 @@ int main(int argc, char* argv[])
 	DQM4HEP::tokenize(lcioFileNamesArg.getValue(), lcioInputFiles, ":");
 
 	// file reader
-	IO::LCReader *pLCReader = IOIMPL::LCFactory::getInstance()->createLCReader(1);
+	IO::LCReader *pLCReader = IOIMPL::LCFactory::getInstance()->createLCReader(0);
 
 	// event collector client
 	DQMEventClient *pEventClient = new DQMDimEventClient();
@@ -166,6 +175,10 @@ int main(int argc, char* argv[])
 		try
 		{
 		   pLCReader->open(lcioInputFiles);
+
+		   if( skipNEventsArg.getValue() )
+			   pLCReader->skipNEvents( skipNEventsArg.getValue() );
+
 		   pLCReader->readStream();
 		   pLCReader->close();
 		}

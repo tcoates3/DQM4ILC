@@ -33,6 +33,14 @@
 #include <cstdlib>
 #include <limits>
 
+// -- lcio headers
+#include "EVENT/CalorimeterHit.h"
+#include "EVENT/LCCollection.h"
+#include "EVENT/LCEvent.h"
+#include "EVENT/LCIO.h"
+#include "UTIL/CellIDDecoder.h"
+#include "UTIL/LCTOOLS.h"
+
 // -- dqm4hep headers
 #include "dqm4hep/DQMMonitorElement.h"
 #include "dqm4hep/DQMCoreTool.h"
@@ -45,13 +53,6 @@
 
 // -- root headers
 #include "TRandom.h"
-
-#include "EVENT/CalorimeterHit.h"
-#include "EVENT/LCCollection.h"
-#include "EVENT/LCEvent.h"
-#include "EVENT/LCIO.h"
-#include "UTIL/CellIDDecoder.h"
-#include "UTIL/LCTOOLS.h"
 
 namespace dqm4hep
 {
@@ -235,7 +236,7 @@ StatusCode CaloHitModule::startOfRun(DQMRun *pRun)
 {
 	LOG4CXX_INFO( dqmMainLogger , "Module : " << getName() << " -- startOfRun()" );
 	LOG4CXX_INFO( dqmMainLogger , "Run no " << pRun->getRunNumber() );
-	time_t startTime = pRun->getStartTime();
+	time_t startTime = std::chrono::system_clock::to_time_t(pRun->getStartTime());
 
 	std::string timeStr;
 	DQMCoreTool::timeToHMS(startTime, timeStr);
@@ -254,7 +255,7 @@ StatusCode CaloHitModule::endOfRun(DQMRun *pRun)
 	LOG4CXX_INFO( dqmMainLogger , "Module : " << getName() << " -- endOfRun()" );
 	LOG4CXX_INFO( dqmMainLogger , "Run no " << pRun->getRunNumber() );
 
-	time_t endTime = pRun->getEndTime();
+	time_t endTime = std::chrono::system_clock::to_time_t(pRun->getEndTime());
 	std::string timeStr;
 	DQMCoreTool::timeToHMS(endTime, timeStr);
 
