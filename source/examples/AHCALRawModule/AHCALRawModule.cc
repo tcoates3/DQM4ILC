@@ -35,6 +35,16 @@
 #include <cstdlib>
 #include <limits>
 
+//#ifndef USELCIO
+//#define USELCIO
+#include "EVENT/LCGenericObject.h"
+#include "EVENT/LCCollection.h"
+#include "EVENT/LCEvent.h"
+#include "EVENT/LCIO.h"
+#include "UTIL/CellIDDecoder.h"
+#include "UTIL/LCTOOLS.h"
+//#endif
+
 // -- dqm4hep headers
 #include "dqm4hep/DQMMonitorElement.h"
 #include "dqm4hep/DQMCoreTool.h"
@@ -48,12 +58,8 @@
 // -- root headers
 #include "TRandom.h"
 
-#include "EVENT/LCGenericObject.h"
-#include "EVENT/LCCollection.h"
-#include "EVENT/LCEvent.h"
-#include "EVENT/LCIO.h"
-#include "UTIL/CellIDDecoder.h"
-#include "UTIL/LCTOOLS.h"
+
+//using namespace lcio;
 
 namespace dqm4hep
 {
@@ -89,9 +95,36 @@ StatusCode AHCALRawModule::readSettings(const TiXmlHandle xmlHandle)
 	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
 										   "ADC_hb1", m_pADC_hitbit1));
 
+	m_pTDC_hitbit0 = NULL;
+	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
+										   "TDC_hb0", m_pTDC_hitbit0));
+
+	m_pTDC_hitbit1 = NULL;
+	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
+										   "TDC_hb1", m_pTDC_hitbit1));
+	// Histograms channel-by-channel for all chips
+
+	m_pADC_hitbit0_ch1 = NULL;
+	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
+										   "ADC_hb0_ch1", m_pADC_hitbit0));
+
+	m_pADC_hitbit1_ch1 = NULL;
+	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
+										   "ADC_hb1_ch1", m_pADC_hitbit1));
+
+	m_pTDC_hitbit0_ch1 = NULL;
+	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
+										   "TDC_hb0_ch1", m_pTDC_hitbit0));
+
+	m_pTDC_hitbit1_ch1 = NULL;
+	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
+										   "TDC_hb1_ch1", m_pTDC_hitbit1));
+
 	m_pNHitElement = NULL;
 	RETURN_RESULT_IF(STATUS_CODE_SUCCESS, !=, DQMXmlHelper::bookMonitorElement(this, xmlHandle,
 			"NHit", m_pNHitElement));
+
+	//std::vector<DQMMonitorElement>
 
 
 	m_dumpEvent = false;
@@ -126,6 +159,17 @@ StatusCode AHCALRawModule::endModule()
 
 StatusCode AHCALRawModule::processEvent(DQMEvent *pEvent)
 {
+
+	int CycleNrIndex = 1;
+	int BxIDIndex = 2;
+	int EvtNrIndex = 3;
+	int ChipIDIndex = 4;
+	int NChannelsIndex = 5;
+	int TDCFirstChannelIndex = 6;
+	int TDCLastChannelIndex = TDCFirstChannelIndex+36-1;
+	int ADCFirstChannelIndex = TDCLastChannelIndex+36;
+	int ADCLastChannelIndex = ADCFirstChannelIndex+36-1;
+
 	EVENT::LCEvent *pLCEvent = pEvent->getEvent<EVENT::LCEvent>();
 
 	if(!pLCEvent)
@@ -138,10 +182,6 @@ StatusCode AHCALRawModule::processEvent(DQMEvent *pEvent)
 
 	int totalNHit = 0;
 
-	//	m_pLastXZProfileElement->reset();
-	//	m_pLastYZProfileElement->reset();
-	//	m_pLastXYProfileElement->reset();
-
 	for(std::vector<std::string>::const_iterator colIter = pCollectionNames->begin(), colEndIter = pCollectionNames->end() ;
 			colEndIter != colIter ; ++colIter)
 	{
@@ -150,12 +190,13 @@ StatusCode AHCALRawModule::processEvent(DQMEvent *pEvent)
 
 	  	  EVENT::LCCollection *pLCCollection = pLCEvent->getCollection(collectionName);
 
-
+if(collectionName=="EUDAQDataScCAL")
+	{
 		if(pLCCollection->getTypeName() == EVENT::LCIO::LCGENERICOBJECT)
 		{
 
 			const int nElements = pLCCollection->getNumberOfElements();
-			totalNHit += nElements;
+			totalNHit += nElements; // Should this change to nChannels now we're reading chip-by-chip?
 
 			for(int e=0 ; e<nElements ; e++)
 			{
@@ -163,17 +204,68 @@ StatusCode AHCALRawModule::processEvent(DQMEvent *pEvent)
 			   if(NULL == pAHCALRaw)
 					continue;
 
-			   if(pAHCALRaw->getIntVal(8)==0) m_pADC_hitbit0->get<TH1F>()->Fill(pAHCALRaw->getIntVal(6));
-			   if(pAHCALRaw->getIntVal(8)==1) m_pADC_hitbit1->get<TH1F>()->Fill(pAHCALRaw->getIntVal(6));
+			   const int nChannels = pAHCALRaw->getIntVal(NChannelsIndex);
 
-			//m_pTimeElement->get<TH1F>()->Fill(pAHCALRaw->getTime());
+			   // Vectors for storing our TDC and ADC by channel
+
+			   std::vector<int> tdcRAW(nChannels);
+			   std::vector<int> adcRAW(nChannels);
+
+			   std::vector<int> tdc(nChannels);
+			   std::vector<int> adc(nChannels);
+
+			   std::vector<int> hitbit_tdc(nChannels);
+			   std::vector<int> gainbit_tdc(nChannels);
+
+			   std::vector<int> hitbit_adc(nChannels);
+			   std::vector<int> gainbit_adc(nChannels);
+
+			   // Counter for storing number of hits rejected in this chip because their hitbits are mismatched
+			   int nEventsRejected = 0;
+
+			   for(int f=0 ; f<nChannels ; f++)		// This loop iterates over the channels in each readout cycle
+			   {
+
+				tdcRAW[f] = pAHCALRaw->getIntVal(TDCFirstChannelIndex+f);
+				adcRAW[f] = pAHCALRaw->getIntVal(ADCFirstChannelIndex+f);
+
+				tdc[f] = tdcRAW[f]%4096;
+				adc[f] = adcRAW[f]%4096;
+
+				hitbit_adc[f] = (adcRAW[f]& 0x1000)/4096;
+				gainbit_adc[f] = (adcRAW[f]& 0x2000)/4096;
+
+				hitbit_tdc[f] = (tdcRAW[f]& 0x1000)/4096;
+				gainbit_tdc[f] = (tdcRAW[f]& 0x2000)/4096;
+
+				if(hitbit_tdc[f] != hitbit_adc[f]) {nEventsRejected++; continue; }	// Rejecting mismatched hits
+
+				if(hitbit_adc[f]==0) m_pADC_hitbit0->get<TH1I>()->Fill(adc[f]);		// Filling ADC histograms for
+				if(hitbit_adc[f]==1) m_pADC_hitbit1->get<TH1I>()->Fill(adc[f]);		// all channels
+
+				if(hitbit_tdc[f]==0) m_pTDC_hitbit0->get<TH1I>()->Fill(tdc[f]);		// Filling TDC histograms for
+				if(hitbit_tdc[f]==1) m_pTDC_hitbit1->get<TH1I>()->Fill(tdc[f]);		// all channels
+
+				if(f==0) {		// Channel 1, all chips
+					if(hitbit_adc[f]==0) m_pADC_hitbit0_ch1->get<TH1I>()->Fill(adc[f]);
+					if(hitbit_adc[f]==1) m_pADC_hitbit1_ch1->get<TH1I>()->Fill(adc[f]);
+
+					if(hitbit_tdc[f]==0) m_pTDC_hitbit0_ch1->get<TH1I>()->Fill(tdc[f]);
+					if(hitbit_tdc[f]==1) m_pTDC_hitbit1_ch1->get<TH1I>()->Fill(tdc[f]);
+					}
+
+			   }
+
+				// LOG4CXX_INFO( dqmMainLogger , "Events rejected this cycle: " << nEventsRejected);
 			}
 		}
 	}
 
+
 	m_pNHitElement->get<TH1I>()->Fill(totalNHit);
 
 	return STATUS_CODE_SUCCESS;
+}
 }
 
 //-------------------------------------------------------------------------------------------------
@@ -202,7 +294,8 @@ StatusCode AHCALRawModule::startOfRun(DQMRun *pRun)
 {
 	LOG4CXX_INFO( dqmMainLogger , "Module : " << getName() << " -- startOfRun()" );
 	LOG4CXX_INFO( dqmMainLogger , "Run no " << pRun->getRunNumber() );
-	time_t startTime = pRun->getStartTime();
+	//	time_t startTime = pRun->getStartTime();
+	time_t startTime = std::chrono::system_clock::to_time_t(pRun->getStartTime());
 
 	std::string timeStr;
 	DQMCoreTool::timeToHMS(startTime, timeStr);
@@ -221,7 +314,8 @@ StatusCode AHCALRawModule::endOfRun(DQMRun *pRun)
 	LOG4CXX_INFO( dqmMainLogger , "Module : " << getName() << " -- endOfRun()" );
 	LOG4CXX_INFO( dqmMainLogger , "Run no " << pRun->getRunNumber() );
 
-	time_t endTime = pRun->getEndTime();
+	//	time_t endTime = pRun->getEndTime();
+	time_t endTime = std::chrono::system_clock::to_time_t(pRun->getEndTime());
 	std::string timeStr;
 	DQMCoreTool::timeToHMS(endTime, timeStr);
 

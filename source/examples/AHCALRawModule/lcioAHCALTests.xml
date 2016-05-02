@@ -23,14 +23,46 @@
         <parameter name="DumpEvent"> false </parameter>
         
 		<monitorElement ID="ADC_hb0"
-			name="ADC_hb0" path="/" type="TH1I" title="ADC counts when hit bit 0, all channels" 
+			name="ADC_hb0" path="/ADC/" type="TH1I" title="ADC counts when hit bit 0, all channels" 
 			nBins="13000" min="0" max="13000" 
 			resetPolicy="EndOfCycle" drawOption="E"/>
 
 		<monitorElement ID="ADC_hb1"
-			name="ADC_hb1" path="/" type="TH1I" title="ADC counts when hit bit 1, all channels" 
+			name="ADC_hb1" path="/ADC/" type="TH1I" title="ADC counts when hit bit 1, all channels" 
 			nBins="13000" min="0" max="13000" 
 			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="TDC_hb0"
+			name="TDC_hb0" path="/TDC/" type="TH1I" title="TDC counts when hit bit 0, all channels" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="TDC_hb1"
+			name="TDC_hb1" path="/TDC/" type="TH1I" title="TDC counts when hit bit 1, all channels" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="ADC_hb0_ch1"
+			name="ADC_hb0_ch1" path="/ADC/Ch1" type="TH1I" title="ADC counts when hit bit 0; channel 1" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="ADC_hb1_ch1"
+			name="ADC_hb1_ch1" path="/ADC/Ch1" type="TH1I" title="ADC counts when hit bit 1; channel 1" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="TDC_hb0_ch1"
+			name="TDC_hb0_ch1" path="/TDC/Ch1" type="TH1I" title="TDC counts when hit bit 0; channel 1" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+		<monitorElement ID="TDC_hb1_ch1"
+			name="TDC_hb1_ch1" path="/TDC/Ch1" type="TH1I" title="TDC counts when hit bit 1; channel 1" 
+			nBins="13000" min="0" max="13000" 
+			resetPolicy="EndOfCycle" drawOption="E"/>
+
+
 
 		<monitorElement ID="NHit"
 			name="NHit" path="/" type="TH1I" title="The number of hits distribution" 

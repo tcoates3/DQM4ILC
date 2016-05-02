@@ -56,9 +56,22 @@ public:
 	StatusCode endModule();
 
 protected:
-	DQMMonitorElement                        *m_pNHitElement;
-	DQMMonitorElement                        *m_pADC_hitbit0;
-	DQMMonitorElement                        *m_pADC_hitbit1;
+	DQMMonitorElementPtr                        m_pNHitElement;
+	DQMMonitorElementPtr                        m_pADC_hitbit0;
+	DQMMonitorElementPtr                        m_pADC_hitbit1;
+	DQMMonitorElementPtr                        m_pTDC_hitbit0;
+	DQMMonitorElementPtr                        m_pTDC_hitbit1;
+
+	DQMMonitorElementPtr                        m_pADC_hitbit0_ch1;
+	DQMMonitorElementPtr                        m_pADC_hitbit1_ch1;
+	DQMMonitorElementPtr                        m_pTDC_hitbit0_ch1;
+	DQMMonitorElementPtr                        m_pTDC_hitbit1_ch1;
+
+	//std::vector<DQMMonitorElementPtr> m_pADC_hitbit0_ch(36);
+	//std::vector<DQMMonitorElementPtr> m_pADC_hitbit1_ch(36);
+	//std::vector<DQMMonitorElementPtr> m_pTDC_hitbit0_ch(36);
+	//std::vector<DQMMonitorElementPtr> m_pTDC_hitbit1_ch(36);
+
 	/* DQMMonitorElement                        *m_pHitsEnergyElement; */
 	/* DQMMonitorElement                        *m_pXZProfileElement; */
 	/* DQMMonitorElement                        *m_pYZProfileElement; */
